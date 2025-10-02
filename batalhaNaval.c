@@ -2,7 +2,7 @@
 
 // declarando o campo
 #define linha 10
-#define coluna 10
+#define  hab 5
 
 // Desafio Batalha Naval - MateCheck
 // Este código inicial serve como base para o desenvolvimento do sistema de Batalha Naval.
@@ -41,27 +41,26 @@ int main() {
     // 0 0 1 0 0
 
      // tabelas numéricas e alfabéticas para organizar o campo
-    int tabelaNumerica[linha] = {0,1,2,3,4,5,6,7,8,9};
+    int tabelaNumerica[size] = {0,1,2,3,4,5,6,7,8,9};
     char tabelaAlfabetica[10] = {'A','B','C','D','E','F','G','H','I','J'};
+    int campo[size][size]; // campo de batalha
 
-    int campo[linha][coluna]; // campo de batalha
     // inicia o campo vazio com apenas água
-    for (int i = 0; i < linha; i++) {
-        for (int j = 0; j < coluna; j++)  {
+    for (int i = 0; i < size; i++) {
+        for (int j = 0; j < size; j++)  {
             campo[i][j] = 0;
         }
     } // Loop para colocar o campo vazio
 
-    int navio1[3] = {3,3,3}, // horizontal
-    navio2[3] = {3,3,3}, // vertical
-    navio3[3] = {3,3,3}, // diagonal
-    navio4[3] = {3,3,3}; // diagonal
+    int navio1[3] = {3,3,3}; // horizontal
+    int navio2[3] = {3,3,3}; // vertical
+    int navio3[3] = {3,3,3}; // diagonal
+    int navio4[3] = {3,3,3}; // diagonal
 
-    int linha1 = 2, coluna1 = 2,
-    linha2 = 1, coluna2 = 0,
-    linha3 = 7, coluna3 = 7,
-    linah4 = 3, coluna4 = 6;
-
+    int linha1 = 2, coluna1 = 2;
+    int linha2 = 1, coluna2 = 0;
+    int linha3 = 7, coluna3 = 7;
+    int linah4 = 3, coluna4 = 6;
 
     // coloca navio1 horizontalmente
     for (int n1 = 0; n1 < 3; n1++) {
@@ -83,6 +82,89 @@ int main() {
         campo[linah4-n4][coluna4+n4] = navio4[n4];
     }
 
+    int habilidadeCone[hab][hab];
+    int habilidadeCruz[hab][hab];
+    int habilidadeOctaedro[hab][hab];
+
+    for (int i = 0; i < hab; i++) {
+        for (int j = 0; j < hab; j++) {
+            if (i < 3 && j >= (2 - i) && j <= (2 + i)) {
+                habilidadeCone[i][j] = 1;
+            } else {
+                habilidadeCone[i][j] = 0;
+            }
+        }
+    }
+
+    for (int i = 0; i < hab; i++) {
+        for (int j = 0; j < hab; j++) {
+            if (i < 3 && (i == 1 || j == 2)) {
+                habilidadeCruz[i][j] = 1;
+            } else {
+                habilidadeCruz[i][j] = 0;
+            }
+        }
+    }
+
+    for (int i = 0; i < hab; i++) {
+        for (int j = 0; j < hab; j++) {
+            int centro_i = 1;  // linha do centro
+            int centro_j = 2;  // coluna do centro
+        
+            // Calcula quantos passos de distância
+            int dist_i, dist_j;
+
+            // Distância em linhas
+            if (i >= centro_i) {
+                dist_i = i - centro_i;  // Abaixo ou no centro
+            } else {
+                dist_i = centro_i - i;  // Acima do centro
+            }
+
+            // Distância em colunas
+            if (j >= centro_j) {
+                dist_j = j - centro_j;  // Direita ou no centro
+            } else {
+                dist_j = centro_j - j;  // Esquerda do centro
+            }
+
+            int distancia = dist_i + dist_j;
+        
+            if (distancia <= 1) {  // Se está a 1 passo ou menos
+                habilidadeOctaedro[i][j] = 1;
+            } else {
+                habilidadeOctaedro[i][j] = 0;
+            }
+        }
+    }
+
+    for (int i = 0; i < 5; i++) {
+        for (int j = 0; j < 5; j++) {
+            if (habilidadeCone[i][j] == 1) {
+                // Calcula posição no campo (centralizando a habilidade)
+                int campo_i = hab - 2 + i; // -2 para centralizar (centro da matriz 5x5)
+                int campo_j = hab - 2 + j;
+            }
+        }
+    }
+
+    for (int i = 0; i < 5; i++) {
+        for (int j = 0; j < 5; j++) {
+            if (habilidadeCruz[i][j] == 1) {
+                int campo_i = hab - 1 + i; // -1 para centralizar na linha 1 da cruz
+                int campo_j = hab - 2 + j; // -2 para centralizar na coluna 2 da cruz
+            }
+        }
+    }
+
+    for (int i = 0; i < 5; i++) {
+        for (int j = 0; j < 5; j++) {
+            if (habilidadeOctaedro[i][j] == 1) {
+                int campo_i = hab - 1 + i; // -1 para centralizar no centro do octaedro
+                int campo_j = hab - 2 + j;
+            }
+        }
+    }
 
     // Cria o campo visualmente 
 
@@ -90,7 +172,7 @@ int main() {
 
     // loop para criar o mapa
 
-    for (int i = 0; i < linha; i++){
+    for (int i = 0; i < size; i++){
         printf("%c ", tabelaAlfabetica[i]);
     }
 
