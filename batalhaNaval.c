@@ -40,7 +40,7 @@ int main() {
     // 1 1 1 1 1
     // 0 0 1 0 0
 
-     // tabelas numéricas e alfabéticas para organizar o campo
+      // tabelas numéricas e alfabéticas para organizar o campo
     int tabelaNumerica[size] = {0,1,2,3,4,5,6,7,8,9};
     char tabelaAlfabetica[10] = {'A','B','C','D','E','F','G','H','I','J'};
     int campo[size][size]; // campo de batalha
@@ -60,16 +60,16 @@ int main() {
     int linha1 = 2, coluna1 = 2;
     int linha2 = 1, coluna2 = 0;
     int linha3 = 7, coluna3 = 7;
-    int linah4 = 3, coluna4 = 6;
+    int linha4 = 3, coluna4 = 6; 
 
     // coloca navio1 horizontalmente
     for (int n1 = 0; n1 < 3; n1++) {
-        campo[linha1][coluna1 + n1] = navio1[n1]; // colocamos o i para percorrer o array navio1 e coluna1 para colocar ele horizontalmente
+        campo[linha1][coluna1 + n1] = navio1[n1];
     }
 
     // coloca navio2 verticalmente 
     for (int n2 = 0; n2 < 3; n2++){
-        campo[linha2 + n2][coluna2] = navio2[n2]; // colocamos o i para percorrer o array navio2 e linha2 para colocar ele verticalmente
+        campo[linha2 + n2][coluna2] = navio2[n2];
     }
 
     // coloca navio3 diagonal para cima
@@ -79,13 +79,15 @@ int main() {
 
     // coloca navio4 diagonal para baixo
     for (int n4 = 0; n4 < 3; n4++){
-        campo[linah4-n4][coluna4+n4] = navio4[n4];
+        campo[linha4-n4][coluna4+n4] = navio4[n4];
     }
 
+    // CRIA AS HABILIDADES
     int habilidadeCone[hab][hab];
     int habilidadeCruz[hab][hab];
     int habilidadeOctaedro[hab][hab];
 
+    // Cria o CONE
     for (int i = 0; i < hab; i++) {
         for (int j = 0; j < hab; j++) {
             if (i < 3 && j >= (2 - i) && j <= (2 + i)) {
@@ -96,6 +98,7 @@ int main() {
         }
     }
 
+    // Cria a CRUZ
     for (int i = 0; i < hab; i++) {
         for (int j = 0; j < hab; j++) {
             if (i < 3 && (i == 1 || j == 2)) {
@@ -106,31 +109,29 @@ int main() {
         }
     }
 
+    // Cria o OCTAEDRO
     for (int i = 0; i < hab; i++) {
         for (int j = 0; j < hab; j++) {
-            int centro_i = 1;  // linha do centro
-            int centro_j = 2;  // coluna do centro
+            int centro_i = 1;
+            int centro_j = 2;
         
-            // Calcula quantos passos de distância
             int dist_i, dist_j;
 
-            // Distância em linhas
             if (i >= centro_i) {
-                dist_i = i - centro_i;  // Abaixo ou no centro
+                dist_i = i - centro_i;
             } else {
-                dist_i = centro_i - i;  // Acima do centro
+                dist_i = centro_i - i;
             }
 
-            // Distância em colunas
             if (j >= centro_j) {
-                dist_j = j - centro_j;  // Direita ou no centro
+                dist_j = j - centro_j;
             } else {
-                dist_j = centro_j - j;  // Esquerda do centro
+                dist_j = centro_j - j;
             }
 
             int distancia = dist_i + dist_j;
         
-            if (distancia <= 1) {  // Se está a 1 passo ou menos
+            if (distancia <= 1) {
                 habilidadeOctaedro[i][j] = 1;
             } else {
                 habilidadeOctaedro[i][j] = 0;
@@ -138,51 +139,76 @@ int main() {
         }
     }
 
-    for (int i = 0; i < 5; i++) {
-        for (int j = 0; j < 5; j++) {
+    // APLICA O CONE NO CAMPO (centrado em 5,5)
+    int origem_cone_i = 5, origem_cone_j = 5;
+    for (int i = 0; i < hab; i++) {
+        for (int j = 0; j < hab; j++) {
             if (habilidadeCone[i][j] == 1) {
-                // Calcula posição no campo (centralizando a habilidade)
-                int campo_i = hab - 2 + i; // -2 para centralizar (centro da matriz 5x5)
-                int campo_j = hab - 2 + j;
+                int campo_i = origem_cone_i - 2 + i;
+                int campo_j = origem_cone_j - 2 + j;
+                
+                // Verifica se está dentro dos limites
+                if (campo_i >= 0 && campo_i < size && campo_j >= 0 && campo_j < size) {
+                    // Só marca se não for navio
+                    if (campo[campo_i][campo_j] != 3) {
+                        campo[campo_i][campo_j] = 5;
+                    }
+                }
             }
         }
     }
 
-    for (int i = 0; i < 5; i++) {
-        for (int j = 0; j < 5; j++) {
+    // APLICA A CRUZ NO CAMPO (centrada em 2,7)
+    int origem_cruz_i = 2, origem_cruz_j = 7;
+    for (int i = 0; i < hab; i++) {
+        for (int j = 0; j < hab; j++) {
             if (habilidadeCruz[i][j] == 1) {
-                int campo_i = hab - 1 + i; // -1 para centralizar na linha 1 da cruz
-                int campo_j = hab - 2 + j; // -2 para centralizar na coluna 2 da cruz
+                int campo_i = origem_cruz_i - 1 + i;
+                int campo_j = origem_cruz_j - 2 + j;
+                
+                if (campo_i >= 0 && campo_i < size && campo_j >= 0 && campo_j < size) {
+                    if (campo[campo_i][campo_j] != 3) {
+                        campo[campo_i][campo_j] = 5;
+                    }
+                }
             }
         }
     }
 
-    for (int i = 0; i < 5; i++) {
-        for (int j = 0; j < 5; j++) {
+    // APLICA O OCTAEDRO NO CAMPO (centrado em 8,3)
+    int origem_oct_i = 8, origem_oct_j = 3;
+    for (int i = 0; i < hab; i++) {
+        for (int j = 0; j < hab; j++) {
             if (habilidadeOctaedro[i][j] == 1) {
-                int campo_i = hab - 1 + i; // -1 para centralizar no centro do octaedro
-                int campo_j = hab - 2 + j;
+                int campo_i = origem_oct_i - 1 + i;
+                int campo_j = origem_oct_j - 2 + j;
+                
+                if (campo_i >= 0 && campo_i < size && campo_j >= 0 && campo_j < size) {
+                    if (campo[campo_i][campo_j] != 3) {
+                        campo[campo_i][campo_j] = 5;
+                    }
+                }
             }
         }
     }
 
     // Cria o campo visualmente 
+    printf("Campo de Batalha Naval com Habilidades\n");
+    printf("Legenda: 0=Agua  3=Navio  5=Habilidade\n\n");
 
-    printf("Campo de Batalha Naval\n");
-
-    // loop para criar o mapa
-
+    // Imprime cabeçalho com letras
+    printf("  ");
     for (int i = 0; i < size; i++){
         printf("%c ", tabelaAlfabetica[i]);
     }
-
     printf("\n");
 
-    for (int i = 0; i < 10; i++) {
-        for (int j = 0; j < 10; j++) {
+    // Imprime o campo com números nas laterais
+    for (int i = 0; i < size; i++) {
+        printf("%d ", tabelaNumerica[i]);
+        for (int j = 0; j < size; j++) {
             printf("%d ", campo[i][j]);
         }
-        printf("  %d", tabelaNumerica[i]);
         printf("\n");
     }
 
